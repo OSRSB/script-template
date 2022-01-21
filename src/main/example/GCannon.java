@@ -1,11 +1,9 @@
-package example;
-
 import net.runelite.api.Point;
-import net.runelite.client.rsb.event.listener.PaintListener;
-import net.runelite.client.rsb.methods.Skills;
-import net.runelite.client.rsb.script.Script;
-import net.runelite.client.rsb.script.ScriptManifest;
-import net.runelite.client.rsb.wrappers.RSTile;
+import rsb.event.listener.PaintListener;
+import rsb.methods.Skills;
+import rsb.script.Script;
+import rsb.script.ScriptManifest;
+import rsb.wrappers.RSTile;
 
 import java.awt.*;
 

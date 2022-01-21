@@ -22,18 +22,14 @@ While one does not currently exist, in the future an individual scripter will be
 
 The script in the example is a basic cannonball making script to outline general script making practices and capabilities. An advanced script maker can go far beyond this and even go as far as edit the backend API if they see the need to. After all, it is open source.
 
-###### Testing your script
-To run your script it is as easy as hitting the green play button in **Intellij**
-You can use the debugging features present in both **IntelliJ** as well as utilize some of the ones present in both [RSB](https://github.com/OSRSB/RSB) and [RuneLite](https://github.com/RuneLite) to diagnose any unwanted behavior. If you find a bug in any API of OSRSB report it in the respective API library.
-
-Current libraries are:
-1. [RSB](https://github.com/OSRSB/RSB)
-2. [DaxWalkerRSB](https://github.com/OSRSB/DaxWalkerRSB)
-
 
 ###### Deploying your script
 Using **IntelliJ** you should find that compiling your script is rather simple.
 In **IntelliJ** build outputs are referred to as **Artifacts**.
+
+Something key to note is configuring the output path to GService in your home directory Documents folder
+(for example in Windows it would be user\Documents\GService)
+This is most likely the only setting needing configuration to any degree.
 
 To set up an artifact that outputs as a jar (the format one would use in the RSB.jar) simply hit:
 1. File
@@ -52,3 +48,19 @@ Now you have a script you can use in the RSB.jar OR you can continue to run and 
 To use a script for RSB, locate the path for your RSB home directory (usually in documents under your user) and place it in the compiled scripts folder.
 
 Now you're ready to script.
+
+###### Testing your script
+To run your script it is as easy as hitting the green play button in **Intellij**
+You can use the debugging features present in both **IntelliJ** (the bug button beside the play button) as well as utilize some of the ones present in both [RSB](https://github.com/OSRSB/RSB) and [RuneLite](https://github.com/RuneLite) to diagnose any unwanted behavior. 
+**IntelliJ** will warn you that configurations are incorrect.
+
+****IGNORE IT****.
+
+
+You are now running your script!
+
+If you find a bug in any API of OSRSB report it in the respective API library.
+
+Current libraries are:
+1. [RSB](https://github.com/OSRSB/RSB)
+2. [DaxWalkerRSB](https://github.com/OSRSB/DaxWalkerRSB)
