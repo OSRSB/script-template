@@ -1,0 +1,43 @@
+plugins {
+    id 'java'
+}
+
+
+allprojects {
+    repositories {
+        maven { url "https://jitpack.io" }
+    }
+}
+
+repositories {
+    mavenLocal()
+    maven {
+        url = 'https://repo.runelite.net'
+    }
+    mavenCentral()
+}
+
+def runeLiteVersion = '1.8.9'
+
+dependencies {
+    compileOnly 'org.projectlombok:lombok:1.18.22'
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.slf4j:slf4j-simple:1.7.32'
+    testImplementation group: 'net.runelite', name: 'client', version: runeLiteVersion, {
+        exclude group: 'ch.qos.logback', module: 'logback-classic'
+    }
+
+    compile group: 'net.sf.jopt-simple', name:'jopt-simple', version: '5.0.4'
+    compile group: 'com.github.OSRSB', name: 'RSB', version: '0.0.2'
+    implementation 'com.github.OSRSB:DaxWalkerRSB:0.0.3'
+}
+
+group = 'osrsb'
+version = '1.0'
+sourceCompatibility = '1.8'
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
