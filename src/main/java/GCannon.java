@@ -1,5 +1,6 @@
 import net.runelite.api.Point;
 import rsb.event.listener.PaintListener;
+import rsb.methods.GameGUI;
 import rsb.methods.Skills;
 import rsb.script.Script;
 import rsb.script.ScriptManifest;
@@ -57,8 +58,8 @@ public class GCannon extends Script implements PaintListener {
 
             case 2:
                 if (random(1, 10) == 5) {
-                    if (ctx.game.getCurrentTab() != game.TAB_INVENTORY) {
-                        game.openTab(game.TAB_INVENTORY);
+                    if (ctx.game.getCurrentTab() != GameGUI.Tab.INVENTORY) {
+                        game.openTab(GameGUI.Tab.INVENTORY);
                     }
                 }
                 return;
@@ -284,7 +285,7 @@ public class GCannon extends Script implements PaintListener {
         ballsPerHour = (int) (3600000.0 / runTime * cannonballs);
         profit = (cannonballPrice * 4 - steelbarPrice) * (cannonballs / 4);
 
-        if (game.getCurrentTab() == game.TAB_INVENTORY) {
+        if (game.getCurrentTab() == GameGUI.Tab.INVENTORY) {
             g.setColor(new Color(0, 0, 0, 175));
             g.fillRoundRect(555, 210, 175, 250, 10, 10);
             g.setColor(Color.WHITE);

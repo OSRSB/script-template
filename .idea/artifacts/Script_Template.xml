@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Script Template">
+    <output-path>$USER_HOME$/GService/Scripts/Precompiled</output-path>
+    <root id="archive" name="Script Template.jar">
+      <element id="module-output" name="Script_Template.main" />
+    </root>
+  </artifact>
+</component>
