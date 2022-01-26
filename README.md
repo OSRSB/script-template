@@ -17,11 +17,15 @@ Doing so will allow the run configurations to be prepared for you to simply run 
 The project uses Gradle to handle dependencies, so if you're interested in adding a new library to your script then
 simply add it in whatever manner that library recommends.
 
-By default the project will come with [RuneLite](https://github.com/RuneLite), [RSB](https://github.com/OSRSB/RSB),
-and [DaxWalkerRSB](https://github.com/OSRSB/DaxWalkerRSB) already listed as imports for use.
+#### API Reference
+To explore the methods you can use in your script check out the API References here:
 
-While one does not currently exist, in the future an individual scriptwriter will be able to refer to the API reference 
-for more details on each methods' functionality as well as aiding in their goal of writing a script.
+[RSB API Reference](https://osrsb.github.io/RSB/)
+
+One for the DaxWalkerRSB API will be added later.
+
+By default, the project will come with [RuneLite](https://github.com/RuneLite), [RSB](https://github.com/OSRSB/RSB),
+and [DaxWalkerRSB](https://github.com/OSRSB/DaxWalkerRSB) already listed as imports for use.
 
 The script in the example is a basic cannonball making script to outline general script making practices and capabilities. 
 An advanced script maker can go far beyond this adding their own dependencies, functionalities, 
