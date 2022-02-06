@@ -34,7 +34,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.22'
 
     testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.slf4j:slf4j-simple:1.7.33'
+    testImplementation 'org.slf4j:slf4j-simple:1.7.35'
 
     compile group: 'net.sf.jopt-simple', name:'jopt-simple', version: '5.0.4'
 
@@ -52,4 +52,15 @@ sourceCompatibility = '1.8'
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
+}
+
+
+task launchClientWithScript(type: JavaExec) {
+    group = "Execution"
+    description = "" +
+            "Runs the main method within RSB"
+    classpath = sourceSets.main.runtimeClasspath
+    main = "rsb.botLauncher.Application"
+    jvmArgs "-debug"
+    args "--bot-runelite --developer-mode".split()
 }

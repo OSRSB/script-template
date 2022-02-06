@@ -33,16 +33,22 @@ utilizing the WebWalker (DaxWalkerRSB), and even go as far as edit the underlyin
 After all, it is open source.
 
 ###### Testing your script
+###### *To Run*
 To run your script it is as easy as hitting the green play button in **Intellij**
+
+###### *Debugging*
 You can use the debugging features present in both **IntelliJ** (the bug button beside the play button)
-as well as utilize some of the ones present in both 
+and utilize some ones present in both 
 [RSB](https://github.com/OSRSB/RSB) and [RuneLite](https://github.com/RuneLite) 
 to diagnose any unwanted behavior. 
+In the future the API will support being launched using an RSPS client for quick testing scripts.
 
-**IntelliJ** will warn you that configurations are incorrect.
+###### *Why is it so easy?*
+The reason this works so simply is due to Gradle run tasks being configured to enable accessing 
+[RSB](https://github.com/OSRSB/RSB) 's main method without IntelliJ throwing an error.
+Since we have the project set-up to already have settings configured script-template[launchClientWithScript].
+If not just select that one to launch.
 
-****IGNORE IT****.
-Simply hit continue anyway, and you are now running your script!
 
 
 ###### Deploying your script
