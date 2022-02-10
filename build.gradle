@@ -23,8 +23,8 @@ sourceSets {
     }
 }
 
-def runeLiteVersion = '1.8.9'
-def rsbVersion = '0.0.5'
+def runeLiteVersion = '1.8.11'
+def rsbVersion = '0.0.6'
 def daxWalkerVersion = '0.0.3'
 
 
