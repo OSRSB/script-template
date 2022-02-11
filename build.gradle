@@ -24,7 +24,7 @@ sourceSets {
 }
 
 def runeLiteVersion = '1.8.11'
-def rsbVersion = '0.0.6'
+def rsbVersion = '0.0.7'
 def daxWalkerVersion = '0.0.3'
 
 
