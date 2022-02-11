@@ -20,11 +20,11 @@ simply add it in whatever manner that library recommends.
 #### API Reference
 To explore the methods you can use in your script check out the API References here:
 
-[RSB API Reference](https://osrsb.github.io/RSB/)
+[OsrsBot API Reference](https://osrsb.github.io/OsrsBot/)
 
 One for the DaxWalkerRSB API will be added later.
 
-By default, the project will come with [RuneLite](https://github.com/RuneLite), [RSB](https://github.com/OSRSB/RSB),
+By default, the project will come with [RuneLite](https://github.com/RuneLite), [OsrsBot](https://github.com/OSRSB/OsrsBot),
 and [DaxWalkerRSB](https://github.com/OSRSB/DaxWalkerRSB) already listed as imports for use.
 
 The script in the example is a basic cannonball making script to outline general script making practices and capabilities. 
@@ -39,13 +39,13 @@ To run your script it is as easy as hitting the green play button in **Intellij*
 ###### *Debugging*
 You can use the debugging features present in both **IntelliJ** (the bug button beside the play button)
 and utilize some ones present in both 
-[RSB](https://github.com/OSRSB/RSB) and [RuneLite](https://github.com/RuneLite) 
+[OsrsBot](https://github.com/OSRSB/OsrsBot) and [RuneLite](https://github.com/RuneLite) 
 to diagnose any unwanted behavior. 
 In the future the API will support being launched using an RSPS client for quick testing scripts.
 
 ###### *Why is it so easy?*
 The reason this works so simply is due to Gradle run tasks being configured to enable accessing 
-[RSB](https://github.com/OSRSB/RSB) 's main method without IntelliJ throwing an error.
+[OsrsBot](https://github.com/OSRSB/OsrsBot) 's main method without IntelliJ throwing an error.
 Since we have the project set-up to already have settings configured script-template[launchClientWithScript].
 If not just select that one to launch.
 
@@ -58,12 +58,12 @@ In **IntelliJ** build outputs are referred to as **Artifacts**.
 **IMPORTANT**
 
 When you go to create an artifact ensure that ONLY the compiled source is selected as output
-UNLESS you imported an external dependency that wouldn't be used in RSB, DaxWalkerRSB, or
+UNLESS you imported an external dependency that wouldn't be used in OsrsBot, DaxWalkerRSB, or
 RuneLite
 
 Instructions:
 
-To set up an artifact that outputs as a jar (the format one would use in the RSB.jar) simply hit:
+To set up an artifact that outputs as a jar (the format one would use in the OsrsBot.jar) simply hit:
 1. File
 2. Project Structure
 3. Artifacts
@@ -78,11 +78,11 @@ To set up an artifact that outputs as a jar (the format one would use in the RSB
 12. Click Ok (in the same interface as above)
 13. Profit!
 
-Now you have a script you can use in the RSB.jar OR you can continue to run and test within your build environment. 
+Now you have a script you can use in the OsrsBot.jar OR you can continue to run and test within your build environment. 
 It is up to you.
 
 
-To use a script for RSB, traverse to
+To use a script for OsrsBot, traverse to
 ```{HOME_DIRECTORY}/GService/Scripts/Precompiled```
 
 and place the compiled jar here.
@@ -93,5 +93,5 @@ Now you're ready to script.
 If you find a bug in any API of OSRSB report it in the respective API library.
 
 Current libraries are:
-1. [RSB](https://github.com/OSRSB/RSB)
+1. [OsrsBot](https://github.com/OSRSB/OsrsBot)
 2. [DaxWalkerRSB](https://github.com/OSRSB/DaxWalkerRSB)
