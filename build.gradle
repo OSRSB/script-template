@@ -24,7 +24,7 @@ sourceSets {
 }
 
 def runeLiteVersion = '1.8.11'
-def rsbVersion = '0.0.7'
+def osrsbotVersion = '0.0.7'
 def daxWalkerVersion = '0.0.3'
 
 
@@ -43,7 +43,7 @@ dependencies {
     testImplementation group: 'net.runelite', name:'client', version: runeLiteVersion
     testImplementation group: 'net.runelite', name:'jshell', version: runeLiteVersion
     compile group: 'com.github.OSRSB', name: 'DaxWalkerRSB', version: daxWalkerVersion
-    compile group: 'com.github.OSRSB', name: 'RSB', version: rsbVersion
+    compile group: 'com.github.OSRSB', name: 'OsrsBot', version: osrsbotVersion
 }
 
 group = 'osrsb'
