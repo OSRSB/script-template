@@ -39,7 +39,7 @@ static def getOperatingSystem() {
 static def getBotScriptDirectory(project) {
     final String NAME = "OsrsBot"
     final String SCRIPT_DIRECTORY = "/Scripts/Sources/"
-    final String env = System.getenv(NAME.toUpperCase() + "_HOME")
+    final String env = System.getenv(NAME.toUpperCase().concat("_HOME"))
     if (env == null || env.isEmpty()) {
         String homeDirBuilder = System.getProperty("user.home")
         switch(getOperatingSystem()) {
