@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'idea'
 }
 
 
@@ -17,15 +18,61 @@ repositories {
     mavenCentral()
 }
 
+enum OperatingSystem {
+    MAC, WINDOWS, LINUX, UNKNOWN
+}
+
+static def getOperatingSystem() {
+    final String os = System.getProperty("os.name")
+    if (os.contains("Mac")) {
+        return OperatingSystem.MAC
+    } else if (os.contains("Windows")) {
+        return OperatingSystem.WINDOWS
+    } else if (os.contains("Linux")) {
+        return OperatingSystem.LINUX
+    } else {
+        return OperatingSystem.UNKNOWN
+    }
+
+}
+
+static def getBotScriptDirectory(project) {
+    final String NAME = "OsrsBot"
+    final String SCRIPT_DIRECTORY = "/Scripts/Sources/"
+    final String env = System.getenv(NAME.toUpperCase() + "_HOME")
+    if (env == null || env.isEmpty()) {
+        String homeDirBuilder = System.getProperty("user.home")
+        switch(getOperatingSystem()) {
+            case OperatingSystem.LINUX:
+                homeDirBuilder +=
+                + File.separator + ".config"
+                break
+            case OperatingSystem.MAC:
+                homeDirBuilder += (homeDirBuilder == null) ? "~" : ""
+                break
+            case OperatingSystem.WINDOWS:
+                //Do nothing
+                break
+            default:
+                //If you're using Solaris or something you're wrong.
+                break
+        }
+        return (homeDirBuilder + File.separator + NAME + SCRIPT_DIRECTORY)
+    }
+    return env
+}
+
+
+
 sourceSets {
     main {
-        java.outputDir = file(System.getProperty("user.home") + '\\GService\\Scripts\\Sources\\')
+        java.outputDir = file(getBotScriptDirectory(this))
     }
 }
 
 def runeLiteVersion = '1.8.11'
-def osrsbotVersion = '0.0.7'
-def daxWalkerVersion = '0.0.3'
+def osrsbotVersion = 'master-SNAPSHOT'
+def daxWalkerVersion = 'master-SNAPSHOT'
 
 
 
@@ -34,7 +81,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.22'
 
     testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.slf4j:slf4j-simple:1.7.35'
+    testImplementation 'org.slf4j:slf4j-simple:1.7.36'
 
     compile group: 'net.sf.jopt-simple', name:'jopt-simple', version: '5.0.4'
 
@@ -42,12 +89,14 @@ dependencies {
 
     testImplementation group: 'net.runelite', name:'client', version: runeLiteVersion
     testImplementation group: 'net.runelite', name:'jshell', version: runeLiteVersion
-    compile group: 'com.github.OSRSB', name: 'DaxWalkerRSB', version: daxWalkerVersion
+    //compile project(":OSRSBot")
     compile group: 'com.github.OSRSB', name: 'OsrsBot', version: osrsbotVersion
+    //compile project(":DaxWalkerRSB")
+    compile group: 'com.github.OSRSB', name: 'DaxWalkerRSB', version: daxWalkerVersion
 }
 
 group = 'osrsb'
-version = '1.0'
+version = '0.0.8'
 sourceCompatibility = '1.8'
 
 tasks.withType(JavaCompile) {
@@ -64,3 +113,4 @@ task launchClientWithScript(type: JavaExec) {
     jvmArgs "-debug"
     args "--bot-runelite --developer-mode".split()
 }
+
