@@ -39,7 +39,7 @@ static def getOperatingSystem() {
 static def getBotScriptDirectory(project) {
     final String NAME = "OsrsBot"
     final String SCRIPT_DIRECTORY = "/Scripts/Sources/"
-    final String env = System.getenv(NAME.toUpperCase() + "_HOME")
+    final String env = System.getenv(NAME.toUpperCase().concat("_HOME"))
     if (env == null || env.isEmpty()) {
         String homeDirBuilder = System.getProperty("user.home")
         switch(getOperatingSystem()) {
@@ -63,7 +63,7 @@ static def getBotScriptDirectory(project) {
 }
 
 
-
+//This allows us to assign the build directory to where our bot will search for scripts in.
 sourceSets {
     main {
         java.getDestinationDirectory().set(file(getBotScriptDirectory(this)))
@@ -71,8 +71,8 @@ sourceSets {
 }
 
 def runeLiteVersion = '1.8.11'
-def osrsbotVersion = 'master-SNAPSHOT'
-def daxWalkerVersion = 'master-SNAPSHOT'
+def osrsbotVersion = '0.0.7'
+def daxWalkerVersion = '0.0.3'
 
 
 
@@ -89,9 +89,11 @@ dependencies {
 
     testImplementation group: 'net.runelite', name:'client', version: runeLiteVersion
     testImplementation group: 'net.runelite', name:'jshell', version: runeLiteVersion
+    //We want these both at compile and at runtime.
+    //So we use implementation instead of compileOnly or runtimeOnly
     //implementation project(":OSRSBot")
     implementation group: 'com.github.OSRSB', name: 'OsrsBot', version: osrsbotVersion
-    //implementation project(":DaxWalkerRSB")
+    //implementation project(":DaxWalkerRSB")\
     implementation group: 'com.github.OSRSB', name: 'DaxWalkerRSB', version: daxWalkerVersion
 }
 
