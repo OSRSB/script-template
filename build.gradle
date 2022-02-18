@@ -45,7 +45,7 @@ static def getBotScriptDirectory(project) {
         switch(getOperatingSystem()) {
             case OperatingSystem.LINUX:
                 homeDirBuilder +=
-                + File.separator + ".config"
+                        + File.separator + ".config"
                 break
             case OperatingSystem.MAC:
                 homeDirBuilder += (homeDirBuilder == null) ? "~" : ""
@@ -66,7 +66,7 @@ static def getBotScriptDirectory(project) {
 
 sourceSets {
     main {
-        java.outputDir = file(getBotScriptDirectory(this))
+        java.getDestinationDirectory().set(file(getBotScriptDirectory(this)))
     }
 }
 
@@ -83,34 +83,33 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.slf4j:slf4j-simple:1.7.36'
 
-    compile group: 'net.sf.jopt-simple', name:'jopt-simple', version: '5.0.4'
+    implementation group: 'net.sf.jopt-simple', name:'jopt-simple', version: '5.0.4'
 
     compileOnly group: 'net.runelite', name:'client', version: runeLiteVersion
 
     testImplementation group: 'net.runelite', name:'client', version: runeLiteVersion
     testImplementation group: 'net.runelite', name:'jshell', version: runeLiteVersion
-    //compile project(":OSRSBot")
-    compile group: 'com.github.OSRSB', name: 'OsrsBot', version: osrsbotVersion
-    //compile project(":DaxWalkerRSB")
-    compile group: 'com.github.OSRSB', name: 'DaxWalkerRSB', version: daxWalkerVersion
+    //implementation project(":OSRSBot")
+    implementation group: 'com.github.OSRSB', name: 'OsrsBot', version: osrsbotVersion
+    //implementation project(":DaxWalkerRSB")
+    implementation group: 'com.github.OSRSB', name: 'DaxWalkerRSB', version: daxWalkerVersion
 }
 
 group = 'osrsb'
 version = '0.0.8'
-sourceCompatibility = '1.8'
+
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
-
 task launchClientWithScript(type: JavaExec) {
     group = "Execution"
-    description = "" +
-            "Runs the main method within RSB"
+    description = "Runs the main method within RSB"
     classpath = sourceSets.main.runtimeClasspath
-    main = "rsb.botLauncher.Application"
+    getMainClass() set "rsb.botLauncher.Application"
     jvmArgs "-debug"
-    args "--bot-runelite --developer-mode".split()
+    args "--bot-runelite --developer-mode".split(" ")
+
 }
 
