@@ -44,8 +44,7 @@ static def getBotScriptDirectory(project) {
         String homeDirBuilder = System.getProperty("user.home")
         switch(getOperatingSystem()) {
             case OperatingSystem.LINUX:
-                homeDirBuilder +=
-                        + File.separator + ".config"
+                homeDirBuilder += File.separator + ".config"
                 break
             case OperatingSystem.MAC:
                 homeDirBuilder += (homeDirBuilder == null) ? "~" : ""
