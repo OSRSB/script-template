@@ -1,8 +1,9 @@
 # Script Template
 ___
 
-## Community Discord
-[Click here](https://discord.gg/CGBXNrHREP) to join our community Discord for more support and help
+## Community 
+* [Forums](https://osrsbot.org/) - Ask questions, find guides, make requests
+* [Discord](https://discord.gg/CGBXNrHREP)
 
 ## Building your first script
 
