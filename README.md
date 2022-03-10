@@ -83,11 +83,11 @@ Now you have a script you can use in the OsrsBot.jar OR you can continue to run 
 It is up to you.
 
 
-To use a script for OsrsBot, traverse to
-```{HOME_DIRECTORY}/GService/Scripts/Precompiled```
+To use a script for OsrsBot, traverse to the following location and place the .jar:
 
-and place the compiled jar here.
-Similarly, if you wish to use someone else's you would do the same.
+**Windows:** C:\\Users\\[username]\\OsrsBot\\Scripts\\Precompiled \
+**Linux:** /home/[username]/.config/OsrsBot/Scripts/Precompiled \
+**MacOS:** /Users/[username]/Library/Application Support/OsrsBot/Scripts/Precompiled
 
 Now you're ready to script.
 
