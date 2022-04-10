@@ -70,7 +70,7 @@ sourceSets {
 }
 
 def runeLiteVersion = '1.8.16'
-def osrsbotVersion = '0.0.9'
+def osrsbotVersion = '0.0.10'
 //def daxWalkerVersion = '0.0.3'
 
 
@@ -90,8 +90,8 @@ dependencies {
     testImplementation group: 'net.runelite', name:'jshell', version: runeLiteVersion
     //We want these both at compile and at runtime.
     //So we use implementation instead of compileOnly or runtimeOnly
-    //implementation project(":OSRSBot")
-    implementation group: 'com.github.OSRSB', name: 'OsrsBot', version: osrsbotVersion
+    implementation project(":OSRSBot")
+    //implementation group: 'com.github.OSRSB', name: 'OsrsBot', version: osrsbotVersion
     //implementation project(":DaxWalkerRSB")
     //implementation group: 'com.github.OSRSB', name: 'DaxWalkerRSB', version: daxWalkerVersion
 }

@@ -1,5 +1,5 @@
 rootProject.name = 'Script Template'
-//include ":OSRSBot"
+include ":OSRSBot"
 //include ":DaxWalkerRSB"
-//project(":OSRSBot").projectDir = file("../OSRSBot")
+project(":OSRSBot").projectDir = file("../OSRSBot")
 //project(":DaxWalkerRSB").projectDir = file("../DaxWalkerRSB")

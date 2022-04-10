@@ -58,8 +58,8 @@ public class GCannon extends Script implements PaintListener {
 
             case 2:
                 if (random(1, 10) == 5) {
-                    if (ctx.game.getCurrentTab() != GameGUI.Tab.INVENTORY) {
-                        game.openTab(GameGUI.Tab.INVENTORY);
+                    if (ctx.game.getCurrentTab() != rsb.internal.globval.enums.InterfaceTab.INVENTORY) {
+                        game.openTab(rsb.internal.globval.enums.InterfaceTab.INVENTORY);
                     }
                 }
                 return;
@@ -285,7 +285,7 @@ public class GCannon extends Script implements PaintListener {
         ballsPerHour = (int) (3600000.0 / runTime * cannonballs);
         profit = (cannonballPrice * 4 - steelbarPrice) * (cannonballs / 4);
 
-        if (game.getCurrentTab() == GameGUI.Tab.INVENTORY) {
+        if (game.getCurrentTab() == rsb.internal.globval.enums.InterfaceTab.INVENTORY) {
             g.setColor(new Color(0, 0, 0, 175));
             g.fillRoundRect(555, 210, 175, 250, 10, 10);
             g.setColor(Color.WHITE);
