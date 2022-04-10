@@ -70,7 +70,7 @@ sourceSets {
 }
 
 def runeLiteVersion = '1.8.11'
-def osrsbotVersion = '0.0.8'
+def osrsbotVersion = '0.0.9'
 def daxWalkerVersion = '0.0.3'
 
 
@@ -92,7 +92,7 @@ dependencies {
     //So we use implementation instead of compileOnly or runtimeOnly
     //implementation project(":OSRSBot")
     implementation group: 'com.github.OSRSB', name: 'OsrsBot', version: osrsbotVersion
-    //implementation project(":DaxWalkerRSB")\
+    //implementation project(":DaxWalkerRSB")
     implementation group: 'com.github.OSRSB', name: 'DaxWalkerRSB', version: daxWalkerVersion
 }
 
