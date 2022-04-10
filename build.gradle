@@ -69,9 +69,9 @@ sourceSets {
     }
 }
 
-def runeLiteVersion = '1.8.11'
+def runeLiteVersion = '1.8.16'
 def osrsbotVersion = '0.0.9'
-def daxWalkerVersion = '0.0.3'
+//def daxWalkerVersion = '0.0.3'
 
 
 
@@ -93,11 +93,11 @@ dependencies {
     //implementation project(":OSRSBot")
     implementation group: 'com.github.OSRSB', name: 'OsrsBot', version: osrsbotVersion
     //implementation project(":DaxWalkerRSB")
-    implementation group: 'com.github.OSRSB', name: 'DaxWalkerRSB', version: daxWalkerVersion
+    //implementation group: 'com.github.OSRSB', name: 'DaxWalkerRSB', version: daxWalkerVersion
 }
 
 group = 'osrsb'
-version = '0.0.8'
+version = '0.0.9'
 
 
 tasks.withType(JavaCompile) {
