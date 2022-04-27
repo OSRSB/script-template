@@ -69,7 +69,7 @@ sourceSets {
     }
 }
 
-def runeLiteVersion = '1.8.16'
+def runeLiteVersion = '1.8.18.4'
 def osrsbotVersion = '0.0.10'
 //def daxWalkerVersion = '0.0.3'
 
