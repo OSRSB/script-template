@@ -114,6 +114,7 @@ docker build -t bot-image .
 ##### Run Docker:
 
 This will remove the container every time you run it (Fresh container)
+
 ```docker run -e DISPLAY={ThisDeviceIP} -t --rm bot-image```
 
 Without removing the container
