@@ -1,7 +1,7 @@
 # Script Template
 ___
 
-## Community 
+## Community
 * [Forums](https://osrsbot.org/) - Ask questions, find guides, make requests
 * [Discord](https://discord.gg/CGBXNrHREP)
 
@@ -28,9 +28,9 @@ One for the DaxWalkerRSB API will be added later.
 By default, the project will come with [RuneLite](https://github.com/RuneLite), [OsrsBot](https://github.com/OSRSB/OsrsBot),
 and [DaxWalkerRSB](https://github.com/OSRSB/DaxWalkerRSB) already listed as imports for use.
 
-The script in the example is a basic cannonball making script to outline general script making practices and capabilities. 
-An advanced script maker can go far beyond this adding their own dependencies, functionalities, 
-utilizing the WebWalker (DaxWalkerRSB), and even go as far as edit the underlying API if they see the need to. 
+The script in the example is a basic cannonball making script to outline general script making practices and capabilities.
+An advanced script maker can go far beyond this adding their own dependencies, functionalities,
+utilizing the WebWalker (DaxWalkerRSB), and even go as far as edit the underlying API if they see the need to.
 After all, it is open source.
 
 ###### Testing your script
@@ -39,13 +39,13 @@ To run your script it is as easy as hitting the green play button in **Intellij*
 
 ###### *Debugging*
 You can use the debugging features present in both **IntelliJ** (the bug button beside the play button)
-and utilize some ones present in both 
-[OsrsBot](https://github.com/OSRSB/OsrsBot) and [RuneLite](https://github.com/RuneLite) 
-to diagnose any unwanted behavior. 
+and utilize some ones present in both
+[OsrsBot](https://github.com/OSRSB/OsrsBot) and [RuneLite](https://github.com/RuneLite)
+to diagnose any unwanted behavior.
 In the future the API will support being launched using an RSPS client for quick testing scripts.
 
 ###### *Why is it so easy?*
-The reason this works so simply is due to Gradle run tasks being configured to enable accessing 
+The reason this works so simply is due to Gradle run tasks being configured to enable accessing
 [OsrsBot](https://github.com/OSRSB/OsrsBot) 's main method without IntelliJ throwing an error.
 Since we have the project set-up to already have settings configured script-template[launchClientWithScript].
 If not just select that one to launch.
@@ -79,7 +79,7 @@ To set up an artifact that outputs as a jar (the format one would use in the Osr
 12. Click Ok (in the same interface as above)
 13. Profit!
 
-Now you have a script you can use in the OsrsBot.jar OR you can continue to run and test within your build environment. 
+Now you have a script you can use in the OsrsBot.jar OR you can continue to run and test within your build environment.
 It is up to you.
 
 
@@ -98,19 +98,20 @@ script builders to be utilizing containerization, but decent reasons include wan
 your actual PC. (Currently the builds target your PC, but execution will occur on the container).
 That said there are Gradle tasks for easier Docker building, but some essential instructions are needed first.
 
-Install Docker:
+##### Install Docker:
 https://docs.docker.com/engine/install/
 
-Install IntelliJ Docker plugin
+##### Install IntelliJ Docker plugin
 
-Users need an XServer
+##### XServer
 For Windows I personally use:
 https://mobaxterm.mobatek.net/
+While untested for Nix and Mac, they have much easier routes
 
-Build Docker:
+##### Build Docker:
 docker build -t bot-image .
 
-Run Docker:
+##### Run Docker:
 docker run -e DISPLAY={ThisDeviceIP} -t --rm bot-image
 // Without removing
 docker run -e DISPLAY={ThisDeviceIP} -t bot-image
@@ -120,7 +121,7 @@ docker run -e DISPLAY="$(ip -o route get to 8.8.8.8 | sed -n 's/.*src \([0-9.]\+
 Open Terminal in IntelliJ:
 Alt+F12 (Windows)
 
-For Windows users if you make any mistakes with your Docker setup, check here for some guidance" 
+For Windows users if you make any mistakes with your Docker setup, check here for some guidance"
 https://github.com/docker/for-win/issues/6971
 
 
