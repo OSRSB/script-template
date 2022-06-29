@@ -1,8 +1,10 @@
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+
 plugins {
     id 'java'
     id 'idea'
 }
-
 
 allprojects {
     repositories {
@@ -19,7 +21,7 @@ repositories {
 }
 
 enum OperatingSystem {
-    MAC, WINDOWS, LINUX, UNKNOWN
+        MAC, WINDOWS, LINUX, UNKNOWN
 }
 
 static def getOperatingSystem() {
@@ -44,17 +46,17 @@ static def getBotScriptDirectory(project) {
         String homeDirBuilder = System.getProperty("user.home")
         switch(getOperatingSystem()) {
             case OperatingSystem.LINUX:
-                homeDirBuilder += File.separator + ".config"
-                break
+            homeDirBuilder += File.separator + ".config"
+            break
             case OperatingSystem.MAC:
-                homeDirBuilder += (homeDirBuilder == null) ? "~" : ""
-                break
+            homeDirBuilder += (homeDirBuilder == null) ? "~" : ""
+            break
             case OperatingSystem.WINDOWS:
-                //Do nothing
-                break
+            //Do nothing
+            break
             default:
-                //If you're using Solaris or something you're wrong.
-                break
+            //If you're using Solaris or something you're wrong.
+            break
         }
         return (homeDirBuilder + File.separator + NAME + SCRIPT_DIRECTORY)
     }
@@ -69,9 +71,35 @@ sourceSets {
     }
 }
 
-def runeLiteVersion = '1.8.18.4'
-def osrsbotVersion = '0.0.10'
-//def daxWalkerVersion = '0.0.3'
+def runeLiteVersion = getRuneLiteVersion()
+
+static def getRuneLiteVersion() {
+    URL url = new URL("http://repo.runelite.net/net/runelite/client/")
+    URLConnection urlConnection = url.openConnection()
+    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(
+            urlConnection.getInputStream()))
+    Date latestDate = null
+    String latestName = null
+    String inputLine
+    while ((inputLine = bufferedReader.readLine()) != null) {
+        inputLine = inputLine.trim().replaceAll(" +", " ")
+        if (inputLine.contains("/\">") && inputLine.contains("</a>")) {
+            String name = inputLine.substring(inputLine.indexOf("/\">") + 3, inputLine.indexOf("</a>") - 1)
+            String removeName = inputLine.substring(inputLine.indexOf("</a>") + 4)
+            Date date
+            if (removeName != "") {
+                DateFormat df = new SimpleDateFormat(" dd-MMM-yyyy HH:mm -")
+                date = df.parse(removeName)
+                if (latestDate == null || date.after(latestDate)) {
+                    latestDate = date
+                    latestName = name
+                }
+            }
+        }
+    }
+    bufferedReader.close()
+    return latestName
+}
 
 
 
@@ -92,13 +120,11 @@ dependencies {
     //So we use implementation instead of compileOnly or runtimeOnly
     implementation project(":OSRSBot")
     //implementation group: 'com.github.OSRSB', name: 'OsrsBot', version: osrsbotVersion
-    //implementation project(":DaxWalkerRSB")
+    implementation project(":DaxWalkerRSB")
     //implementation group: 'com.github.OSRSB', name: 'DaxWalkerRSB', version: daxWalkerVersion
 }
 
 group = 'osrsb'
-version = '0.0.9'
-
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
@@ -111,6 +137,22 @@ task launchClientWithScript(type: JavaExec) {
     getMainClass() set "rsb.botLauncher.Application"
     jvmArgs "-debug"
     args "--bot-runelite --developer-mode".split(" ")
-
 }
 
+task dockerBuild(type: Exec) {
+    group = "docker"
+    description = "Builds the bot in a docker image"
+    commandLine "bash", "-c",
+"""
+docker build -t bot-image .
+"""
+}
+
+task dockerRun(type: Exec) {
+    group = "docker"
+    description = "Runs the bot on the local host in a Docker container"
+    commandLine "bash", "-c",
+"""
+docker run -e DISPLAY="\$(ip -o route get to 8.8.8.8 | sed -n 's/.*src \\([0-9.]\\+\\).*/\\1/p'):0.0" --rm -t bot-image
+"""
+}
