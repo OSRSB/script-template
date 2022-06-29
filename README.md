@@ -91,6 +91,39 @@ To use a script for OsrsBot, traverse to the following location and place the .j
 
 Now you're ready to script.
 
+### Docker
+The script-template additionally includes a Dockerfile to aid in building containers. The Dockerfile itself is fairly
+simple and anyone experienced with Docker should find this all very easy to use. That said it isn't necessary for general
+script builders to be utilizing containerization, but decent reasons include wanting to keep the bot files separate from
+your actual PC. (Currently the builds target your PC, but execution will occur on the container).
+That said there are Gradle tasks for easier Docker building, but some essential instructions are needed first.
+
+Install Docker:
+https://docs.docker.com/engine/install/
+
+Install IntelliJ Docker plugin
+
+Users need an XServer
+For Windows I personally use:
+https://mobaxterm.mobatek.net/
+
+Build Docker:
+docker build -t bot-image .
+
+Run Docker:
+docker run -e DISPLAY={ThisDeviceIP} -t --rm bot-image
+// Without removing
+docker run -e DISPLAY={ThisDeviceIP} -t bot-image
+// If you don't want to find your IP this *might* work
+docker run -e DISPLAY="$(ip -o route get to 8.8.8.8 | sed -n 's/.*src \([0-9.]\+\).*/\1/p'):0.0" --rm -t bot-image
+
+Open Terminal in IntelliJ:
+Alt+F12 (Windows)
+
+For Windows users if you make any mistakes with your Docker setup, check here for some guidance" 
+https://github.com/docker/for-win/issues/6971
+
+
 If you find a bug in any API of OSRSB report it in the respective API library.
 
 Current libraries are:
