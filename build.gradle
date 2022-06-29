@@ -1,7 +1,9 @@
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+
 plugins {
     id 'java'
     id 'idea'
-    id 'com.palantir.docker' version '0.34.0'
 }
 
 allprojects {
@@ -69,9 +71,35 @@ sourceSets {
     }
 }
 
-def runeLiteVersion = '1.8.18.4'
-def osrsbotVersion = '0.0.10'
-//def daxWalkerVersion = '0.0.3'
+def runeLiteVersion = getRuneLiteVersion()
+
+static def getRuneLiteVersion() {
+    URL url = new URL("http://repo.runelite.net/net/runelite/client/")
+    URLConnection urlConnection = url.openConnection()
+    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(
+            urlConnection.getInputStream()))
+    Date latestDate = null
+    String latestName = null
+    String inputLine
+    while ((inputLine = bufferedReader.readLine()) != null) {
+        inputLine = inputLine.trim().replaceAll(" +", " ")
+        if (inputLine.contains("/\">") && inputLine.contains("</a>")) {
+            String name = inputLine.substring(inputLine.indexOf("/\">") + 3, inputLine.indexOf("</a>") - 1)
+            String removeName = inputLine.substring(inputLine.indexOf("</a>") + 4)
+            Date date
+            if (removeName != "") {
+                DateFormat df = new SimpleDateFormat(" dd-MMM-yyyy HH:mm -")
+                date = df.parse(removeName)
+                if (latestDate == null || date.after(latestDate)) {
+                    latestDate = date
+                    latestName = name
+                }
+            }
+        }
+    }
+    bufferedReader.close()
+    return latestName
+}
 
 
 
@@ -92,13 +120,11 @@ dependencies {
     //So we use implementation instead of compileOnly or runtimeOnly
     implementation project(":OSRSBot")
     //implementation group: 'com.github.OSRSB', name: 'OsrsBot', version: osrsbotVersion
-    //implementation project(":DaxWalkerRSB")
+    implementation project(":DaxWalkerRSB")
     //implementation group: 'com.github.OSRSB', name: 'DaxWalkerRSB', version: daxWalkerVersion
 }
 
 group = 'osrsb'
-version = '0.0.9'
-
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
@@ -113,9 +139,13 @@ task launchClientWithScript(type: JavaExec) {
     args "--bot-runelite --developer-mode".split(" ")
 }
 
-docker {
-    name "bot-image"
-    files "OSRSBot.jar"
+task dockerBuild(type: Exec) {
+    group = "docker"
+    description = "Builds the bot in a docker image"
+    commandLine "bash", "-c",
+"""
+docker build -t bot-image .
+"""
 }
 
 task dockerRun(type: Exec) {
@@ -123,6 +153,6 @@ task dockerRun(type: Exec) {
     description = "Runs the bot on the local host in a Docker container"
     commandLine "bash", "-c",
 """
-docker run -e DISPLAY=`\$(hostname -I):0.0` --rm -t bot-image
+docker run -e DISPLAY="\$(ip -o route get to 8.8.8.8 | sed -n 's/.*src \\([0-9.]\\+\\).*/\\1/p'):0.0" --rm -t bot-image
 """
 }
