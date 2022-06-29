@@ -112,11 +112,17 @@ While untested for Nix and Mac, they have much easier routes
 docker build -t bot-image .
 
 ##### Run Docker:
-docker run -e DISPLAY={ThisDeviceIP} -t --rm bot-image
-// Without removing
-docker run -e DISPLAY={ThisDeviceIP} -t bot-image
-// If you don't want to find your IP this *might* work
-docker run -e DISPLAY="$(ip -o route get to 8.8.8.8 | sed -n 's/.*src \([0-9.]\+\).*/\1/p'):0.0" --rm -t bot-image
+
+This will remove the container every time you run it (Fresh container)
+```docker run -e DISPLAY={ThisDeviceIP} -t --rm bot-image```
+
+Without removing the container
+
+```docker run -e DISPLAY={ThisDeviceIP} -t bot-image```
+
+If you don't want to find your IP this *might* work
+
+```docker run -e DISPLAY="$(ip -o route get to 8.8.8.8 | sed -n 's/.*src \([0-9.]\+\).*/\1/p'):0.0" --rm -t bot-image```
 
 Open Terminal in IntelliJ:
 Alt+F12 (Windows)
