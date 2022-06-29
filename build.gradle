@@ -1,8 +1,8 @@
 plugins {
     id 'java'
     id 'idea'
+    id 'com.palantir.docker' version '0.34.0'
 }
-
 
 allprojects {
     repositories {
@@ -19,7 +19,7 @@ repositories {
 }
 
 enum OperatingSystem {
-    MAC, WINDOWS, LINUX, UNKNOWN
+        MAC, WINDOWS, LINUX, UNKNOWN
 }
 
 static def getOperatingSystem() {
@@ -44,17 +44,17 @@ static def getBotScriptDirectory(project) {
         String homeDirBuilder = System.getProperty("user.home")
         switch(getOperatingSystem()) {
             case OperatingSystem.LINUX:
-                homeDirBuilder += File.separator + ".config"
-                break
+            homeDirBuilder += File.separator + ".config"
+            break
             case OperatingSystem.MAC:
-                homeDirBuilder += (homeDirBuilder == null) ? "~" : ""
-                break
+            homeDirBuilder += (homeDirBuilder == null) ? "~" : ""
+            break
             case OperatingSystem.WINDOWS:
-                //Do nothing
-                break
+            //Do nothing
+            break
             default:
-                //If you're using Solaris or something you're wrong.
-                break
+            //If you're using Solaris or something you're wrong.
+            break
         }
         return (homeDirBuilder + File.separator + NAME + SCRIPT_DIRECTORY)
     }
@@ -111,6 +111,18 @@ task launchClientWithScript(type: JavaExec) {
     getMainClass() set "rsb.botLauncher.Application"
     jvmArgs "-debug"
     args "--bot-runelite --developer-mode".split(" ")
-
 }
 
+docker {
+    name "bot-image"
+    files "OSRSBot.jar"
+}
+
+task dockerRun(type: Exec) {
+    group = "docker"
+    description = "Runs the bot on the local host in a Docker container"
+    commandLine "bash", "-c",
+"""
+docker run -e DISPLAY=`\$(hostname -I):0.0` --rm -t bot-image
+"""
+}
