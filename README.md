@@ -114,6 +114,7 @@ docker build -t bot-image .
 ##### Run Docker:
 
 This will remove the container every time you run it (Fresh container)
+
 ```docker run -e DISPLAY={ThisDeviceIP} -t --rm bot-image```
 
 Without removing the container
@@ -126,6 +127,19 @@ If you don't want to find your IP this *might* work
 
 Open Terminal in IntelliJ:
 Alt+F12 (Windows)
+
+To connect to a running container with Bash open the terminal in Intellij (or wherever) and then run the following
+
+```
+docker container ls
+```
+
+Note the name for the container (unless you want to copy the id)
+Then with that name run
+
+```
+docker container exec -it {container-name} bash
+```
 
 For Windows users if you make any mistakes with your Docker setup, check here for some guidance"
 https://github.com/docker/for-win/issues/6971
