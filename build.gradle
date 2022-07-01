@@ -63,13 +63,13 @@ static def getBotScriptDirectory(project) {
     return env
 }
 
-
 //This allows us to assign the build directory to where our bot will search for scripts in.
 sourceSets {
     main {
         java.getDestinationDirectory().set(file(getBotScriptDirectory(this)))
     }
 }
+
 
 def runeLiteVersion = getRuneLiteVersion()
 
@@ -101,6 +101,23 @@ static def getRuneLiteVersion() {
     return latestName
 }
 
+private static void copyLargeDir(File dirFrom, File dirTo){
+    // creation the target dir
+    if (!dirTo.exists()){
+        dirTo.mkdir();
+    }
+    // copying the daughter files
+    dirFrom.eachFile(groovy.io.FileType.FILES){File source ->
+        File target = new File(dirTo,source.getName());
+        target.bytes = source.bytes;
+    }
+    // copying the daughter dirs - recursion
+    dirFrom.eachFile(groovy.io.FileType.DIRECTORIES){File source ->
+        File target = new File(dirTo,source.getName());
+        copyLargeDir(source, target)
+    }
+}
+
 
 
 dependencies {
@@ -130,6 +147,16 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
+task dockerBuild(type: Exec) {
+    group = "docker"
+    description = "Builds the bot in a docker image"
+    copyLargeDir(new File(getBotScriptDirectory()), new File(project.buildDir.getAbsolutePath().concat("/scripts/")))
+    commandLine "bash", "-c",
+            """
+docker build -t bot-image .
+"""
+}
+
 task launchClientWithScript(type: JavaExec) {
     group = "Execution"
     description = "Runs the main method within RSB"
@@ -139,14 +166,7 @@ task launchClientWithScript(type: JavaExec) {
     args "--bot-runelite --developer-mode".split(" ")
 }
 
-task dockerBuild(type: Exec) {
-    group = "docker"
-    description = "Builds the bot in a docker image"
-    commandLine "bash", "-c",
-"""
-docker build -t bot-image .
-"""
-}
+
 
 task dockerRun(type: Exec) {
     group = "docker"
