@@ -67,6 +67,7 @@ static def getBotScriptDirectory(project) {
 sourceSets {
     main {
         java.getDestinationDirectory().set(file(getBotScriptDirectory(this)))
+        java.getDestinationDirectory().set(file("build/scripts"))
     }
 }
 
@@ -87,8 +88,8 @@ static def getRuneLiteVersion() {
             String name = inputLine.substring(inputLine.indexOf("/\">") + 3, inputLine.indexOf("</a>") - 1)
             String removeName = inputLine.substring(inputLine.indexOf("</a>") + 4)
             Date date
-            if (removeName != "") {
-                DateFormat df = new SimpleDateFormat(" dd-MMM-yyyy HH:mm -")
+            if (!name.contains("SNAPSHOT") && removeName != "") {
+                DateFormat df = new SimpleDateFormat(" dd-MMM-yyyy HH:mm -", Locale.ENGLISH)
                 date = df.parse(removeName)
                 if (latestDate == null || date.after(latestDate)) {
                     latestDate = date
@@ -100,25 +101,6 @@ static def getRuneLiteVersion() {
     bufferedReader.close()
     return latestName
 }
-
-private static void copyLargeDir(File dirFrom, File dirTo){
-    // creation the target dir
-    if (!dirTo.exists()){
-        dirTo.mkdir();
-    }
-    // copying the daughter files
-    dirFrom.eachFile(groovy.io.FileType.FILES){File source ->
-        File target = new File(dirTo,source.getName());
-        target.bytes = source.bytes;
-    }
-    // copying the daughter dirs - recursion
-    dirFrom.eachFile(groovy.io.FileType.DIRECTORIES){File source ->
-        File target = new File(dirTo,source.getName());
-        copyLargeDir(source, target)
-    }
-}
-
-
 
 dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.22'
@@ -148,31 +130,8 @@ tasks.withType(JavaCompile) {
 }
 
 task dockerBuild(type: Exec) {
-    group = "docker"
-    description = "Builds the bot in a docker image"
-    copyLargeDir(new File(getBotScriptDirectory()), new File(project.buildDir.getAbsolutePath().concat("/scripts/")))
-    commandLine "bash", "-c",
-            """
-docker build -t bot-image .
-"""
+    commandLine 'docker', 'build', '-t', 'bot-image', '.'
 }
-
-task launchClientWithScript(type: JavaExec) {
-    group = "Execution"
-    description = "Runs the main method within RSB"
-    classpath = sourceSets.main.runtimeClasspath
-    getMainClass() set "rsb.botLauncher.Application"
-    jvmArgs "-debug"
-    args "--bot-runelite --developer-mode".split(" ")
-}
-
-
-
 task dockerRun(type: Exec) {
-    group = "docker"
-    description = "Runs the bot on the local host in a Docker container"
-    commandLine "bash", "-c",
-"""
-docker run -e DISPLAY="\$(ip -o route get to 8.8.8.8 | sed -n 's/.*src \\([0-9.]\\+\\).*/\\1/p'):0.0" --rm -t bot-image
-"""
+    commandLine 'docker', 'run', '-e', 'DISPLAY=host.docker.internal:0', '-t', '--rm', 'bot-image'
 }
