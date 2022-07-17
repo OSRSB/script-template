@@ -12,7 +12,7 @@ services:
       - PGID=1000
       - TZ=America/New_York
     volumes:
-      - /Users/averyd/workspace/rs/BBBots/config:/config # Set to your local config
+      - /path/to/wireguard/config:/config # Set to your local config
       - /lib/modules:/lib/modules
     ports:
       - 8080:8080
