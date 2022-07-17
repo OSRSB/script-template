@@ -8,12 +8,8 @@ group = 'com.github.OSRSB'
 allprojects {
     repositories {
         mavenLocal()
-        maven {
-            url "https://repo.runelite.net"
-        }
-        maven {
-            url "https://jitpack.io"
-        }
+        maven { url 'https://repo.runelite.net' }
+        maven { url 'https://jitpack.io' }
         mavenCentral()
     }
 }
@@ -27,6 +23,7 @@ sourceSets {
 }
 
 jar {
+    configurations.implementation.setCanBeResolved(true)
     from {
         configurations.implementation.filter {it.name.startsWith('Dax')}.collect {zipTree(it)}
     }
