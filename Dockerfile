@@ -12,7 +12,7 @@ ARG BUILD_HOME
 ENV APP_HOME=$BUILD_HOME/bot
 WORKDIR $APP_HOME
 # Copy gradle settings and config to /app in the image
-COPY /.docker/build-dockerfile.gradle settings.gradle $APP_HOME
+COPY /build-dockerfile.gradle settings.gradle $APP_HOME
 
 # Build gradle - caches dependencies
 RUN gradle --no-daemon build || return 0

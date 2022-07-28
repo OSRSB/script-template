@@ -6,19 +6,18 @@ ___
 * [Discord](https://discord.gg/CGBXNrHREP)
 
 
-## Local Dev
+## Running in Docker
 
-1. Setup XQuartz so docker has gui access 
+1. Setup X Server so docker has gui access if you want
 
-Mac Example: https://gist.github.com/sorny/969fe55d85c9b0035b0109a31cbcb088
+Mac: XQuartz Example: https://gist.github.com/sorny/969fe55d85c9b0035b0109a31cbcb088
+Windows: VcXsrv
 
-2. Fork OsrsBot and DaxWalker and create a branch called dev (keep this remote updated with your local changes and rebuild image on changes)
+1. `make build-bot`
 
-3. `make build-bot`
+1. `make run-bot`
 
-4. `make run-bot`
-
-5. profit
+1. profit
 
 --- 
 
