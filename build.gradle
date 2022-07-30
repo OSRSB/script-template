@@ -1,9 +1,9 @@
-import java.text.DateFormat
-import java.text.SimpleDateFormat
+import java.nio.file.Files
 
 plugins {
     id 'java'
     id 'idea'
+    id 'maven-publish'
 }
 
 allprojects {
@@ -20,58 +20,6 @@ repositories {
     mavenCentral()
 }
 
-enum OperatingSystem {
-        MAC, WINDOWS, LINUX, UNKNOWN
-}
-
-static def getOperatingSystem() {
-    final String os = System.getProperty("os.name")
-    if (os.contains("Mac")) {
-        return OperatingSystem.MAC
-    } else if (os.contains("Windows")) {
-        return OperatingSystem.WINDOWS
-    } else if (os.contains("Linux")) {
-        return OperatingSystem.LINUX
-    } else {
-        return OperatingSystem.UNKNOWN
-    }
-
-}
-
-static def getBotScriptDirectory(project) {
-    final String NAME = "OsrsBot"
-    final String SCRIPT_DIRECTORY = "/Scripts/Sources/"
-    final String env = System.getenv(NAME.toUpperCase().concat("_HOME"))
-    if (env == null || env.isEmpty()) {
-        String homeDirBuilder = System.getProperty("user.home")
-        switch(getOperatingSystem()) {
-            case OperatingSystem.LINUX:
-            homeDirBuilder += File.separator + ".config"
-            break
-            case OperatingSystem.MAC:
-            homeDirBuilder += (homeDirBuilder == null) ? "~" : ""
-            break
-            case OperatingSystem.WINDOWS:
-            //Do nothing
-            break
-            default:
-            //If you're using Solaris or something you're wrong.
-            break
-        }
-        return (homeDirBuilder + File.separator + NAME + SCRIPT_DIRECTORY)
-    }
-    return env
-}
-
-//This allows us to assign the build directory to where our bot will search for scripts in.
-sourceSets {
-    main {
-        java.getDestinationDirectory().set(file(getBotScriptDirectory(this)))
-        java.getDestinationDirectory().set(file("build/scripts"))
-    }
-}
-
-
 def runeLiteVersion = getRuneLiteVersion()
 
 static def getRuneLiteVersion() {
@@ -79,7 +27,6 @@ static def getRuneLiteVersion() {
     URLConnection urlConnection = url.openConnection()
     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(
             urlConnection.getInputStream()))
-    Date latestDate = null
     String latestName = null
     String inputLine
     while ((inputLine = bufferedReader.readLine()) != null) {
@@ -87,12 +34,8 @@ static def getRuneLiteVersion() {
         if (inputLine.contains("/\">") && inputLine.contains("</a>")) {
             String name = inputLine.substring(inputLine.indexOf("/\">") + 3, inputLine.indexOf("</a>") - 1)
             String removeName = inputLine.substring(inputLine.indexOf("</a>") + 4)
-            Date date
             if (!name.contains("SNAPSHOT") && removeName != "") {
-                DateFormat df = new SimpleDateFormat(" dd-MMM-yyyy HH:mm -", Locale.ENGLISH)
-                date = df.parse(removeName)
-                if (latestDate == null || date.after(latestDate)) {
-                    latestDate = date
+                if (compareSemanticVersion(latestName, name)) {
                     latestName = name
                 }
             }
@@ -102,9 +45,42 @@ static def getRuneLiteVersion() {
     return latestName
 }
 
+static def compareSemanticVersion(String s1, String s2) {
+    if (s1 != null && s2 != null) {
+        while (true) {
+            if (s1.indexOf('.') != -1 && s2.indexOf('.') != -1) {
+                if (s1.substring(0, s1.indexOf('.')) == s2.substring(0, s2.indexOf('.'))) {
+                    s1 = s1.substring(s1.indexOf('.') + 1)
+                    s2 = s2.substring(s2.indexOf('.') + 1)
+                }
+                else {
+                    if (s1.indexOf('.') != -1) {
+                        s1 = s1.substring(0, s1.indexOf('.'))
+                    }
+                    if (s2.indexOf('.') != -1) {
+                        s2 = s2.substring(0, s2.indexOf('.'))
+                    }
+                    return Integer.parseInt(s1).intValue() < Integer.parseInt(s2).intValue()
+                }
+            }
+            else {
+                if (s1.indexOf('.') != -1) {
+                    s1 = s1.substring(0, s1.indexOf('.'))
+                }
+                if (s2.indexOf('.') != -1) {
+                    s2 = s2.substring(0, s2.indexOf('.'))
+                }
+                return Integer.parseInt(s1).intValue() < Integer.parseInt(s2).intValue()
+            }
+        }
+    }
+    return s1 == null && s2 != null
+}
+
+
 dependencies {
-    compileOnly 'org.projectlombok:lombok:1.18.22'
-    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.slf4j:slf4j-simple:1.7.36'
@@ -117,10 +93,10 @@ dependencies {
     testImplementation group: 'net.runelite', name:'jshell', version: runeLiteVersion
     //We want these both at compile and at runtime.
     //So we use implementation instead of compileOnly or runtimeOnly
-    implementation project(":OSRSBot")
-    //implementation group: 'com.github.OSRSB', name: 'OsrsBot', version: osrsbotVersion
-    implementation project(":DaxWalkerRSB")
-    //implementation group: 'com.github.OSRSB', name: 'DaxWalkerRSB', version: daxWalkerVersion
+    // implementation project(":OSRSBot")
+    implementation 'com.github.OSRSB:OSRSBot:master-SNAPSHOT'
+    implementation 'com.github.OSRSB:DaxWalkerOSRSBot:master-SNAPSHOT'
+    //implementation project(":DaxWalkerRSB")
 }
 
 group = 'osrsb'
@@ -129,9 +105,132 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
-task dockerBuild(type: Exec) {
-    commandLine 'docker', 'build', '-t', 'bot-image', '.'
+sourceSets {
+    main {
+        java {
+            srcDirs= ["src/main/java"]
+        }
+    }
 }
-task dockerRun(type: Exec) {
-    commandLine 'docker', 'run', '-e', 'DISPLAY=host.docker.internal:0', '-t', '--rm', 'bot-image'
+
+jar {
+    configurations.implementation.setCanBeResolved(true)
+    from {
+        configurations.implementation.filter {it.name.startsWith('Dax')}.collect {zipTree(it)}
+    }
+
+    exclude 'META-INF/*.RSA'
+    exclude 'META-INF/*.SF'
+    exclude 'META-INF/*.DSA'
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+enum OperatingSystem {
+    MAC, WINDOWS, LINUX, UNKNOWN
+
+    static def getOperatingSystem() {
+        final String os = System.getProperty("os.name")
+        if (os.contains("Mac")) {
+            return MAC
+        } else if (os.contains("Windows")) {
+            return WINDOWS
+        } else if (os.contains("Linux")) {
+            return LINUX
+        } else {
+            return UNKNOWN
+        }
+    }
+}
+
+class ScriptTask extends DefaultTask {
+    static String getBotScriptDirectory() {
+        final String NAME = "OsrsBot"
+        final String SCRIPT_DIRECTORY = "/Scripts/Sources/"
+        final String env = System.getenv(NAME.toUpperCase().concat("_HOME"))
+        if (env == null || env.isEmpty()) {
+            String homeDirBuilder = System.getProperty("user.home")
+            switch(OperatingSystem.getOperatingSystem()) {
+                case OperatingSystem.LINUX:
+                    homeDirBuilder += File.separator + ".config"
+                    break
+                case OperatingSystem.MAC:
+                    homeDirBuilder += (homeDirBuilder == null) ? "~" : ""
+                    break
+                case OperatingSystem.WINDOWS:
+                    //Do nothing
+                    break
+                default:
+                    //If you're using Solaris or something you're wrong.
+                    break
+            }
+            return (homeDirBuilder + File.separator + NAME + SCRIPT_DIRECTORY)
+        }
+        return env
+    }
+
+    @InputDirectory
+    var scriptDependency =
+            project.file("${project.buildDir}/classes")
+
+    @OutputDirectory
+    var outputDir =
+            project.file(getBotScriptDirectory())
+
+    @TaskAction
+    def copyFiles() {
+        if (!outputDir.exists())
+            Files.copy(scriptDependency.toPath(), outputDir.toPath())
+    }
+}
+
+task outputToScriptDirectory(type: ScriptTask) {
+    dependsOn(classes)
+}
+
+task botRunGUI(type: JavaExec) {
+    group = "Execution"
+    description = "Runs the main method within RSB"
+    classpath = sourceSets.main.compileClasspath + sourceSets.main.runtimeClasspath
+    getMainClass() set "net.runelite.rsb.botLauncher.Application"
+    String jvmArgString = (OperatingSystem.MAC == OperatingSystem.getOperatingSystem()) ?
+            "-debug --add-opens=java.desktop/com.apple.eawt=ALL-UNNAMED --add-opens=java.desktop/sun.awt=ALL-UNNAMED" :
+            "-debug"
+    jvmArgs jvmArgString.split(" ")
+    args "--bot-runelite --developer-mode".split(" ")
+    dependsOn(outputToScriptDirectory)
+}
+
+task botRunHeadless(type: JavaExec) {
+    group = "Execution"
+    description = "Runs the main method within RSB"
+    classpath = sourceSets.main.compileClasspath + sourceSets.main.runtimeClasspath
+    getMainClass() set "net.runelite.rsb.botLauncher.Application"
+    String jvmArgString = (OperatingSystem.MAC == OperatingSystem.getOperatingSystem()) ?
+            "-debug --add-opens=java.desktop/com.apple.eawt=ALL-UNNAMED --add-opens=java.desktop/sun.awt=ALL-UNNAMED" :
+            "-debug"
+    jvmArgs jvmArgString.split(" ")
+    args "--bot-runelite --developer-mode --headless".split(" ")
+    dependsOn(outputToScriptDirectory)
+}
+
+task dockerBuild(type: Exec) {
+    group = "Docker"
+    description = "Builds the docker image"
+    commandLine 'docker', 'build', '-t', 'bot-image', '.'
+    dependsOn classes
+}
+
+task dockerRunGUI(type: Exec) {
+    group = "Docker"
+    description = "Runs the Docker image on the host XServer"
+    commandLine 'docker', 'run', '-e', 'DISPLAY=host.docker.internal:1', '-t', '--rm', 'bot-image'
+    dependsOn dockerBuild
+}
+
+task dockerRunHeadless(type: Exec) {
+    group = "Docker"
+    description = "Runs the Docker image on the host XServer"
+    commandLine 'docker', 'run', '-e', 'DISPLAY=host.docker.internal:0', '-t', '--rm', 'bot-image', '--headless'
+    dependsOn dockerBuild
 }
