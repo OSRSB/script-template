@@ -1,6 +1,4 @@
 import java.nio.file.Files
-import java.text.DateFormat
-import java.text.SimpleDateFormat
 
 plugins {
     id 'java'
@@ -81,8 +79,8 @@ static def compareSemanticVersion(String s1, String s2) {
 
 
 dependencies {
-    compileOnly 'org.projectlombok:lombok:1.18.22'
-    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.slf4j:slf4j-simple:1.7.36'
@@ -97,8 +95,8 @@ dependencies {
     //So we use implementation instead of compileOnly or runtimeOnly
     // implementation project(":OSRSBot")
     implementation 'com.github.OSRSB:OSRSBot:master-SNAPSHOT'
-    //implementation project(":DaxWalkerRSB")
     implementation 'com.github.OSRSB:DaxWalkerOSRSBot:master-SNAPSHOT'
+    //implementation project(":DaxWalkerRSB")
 }
 
 group = 'osrsb'
@@ -128,32 +126,31 @@ jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
-class ScriptTask extends DefaultTask {
-    enum OperatingSystem {
-        MAC, WINDOWS, LINUX, UNKNOWN
-    }
+enum OperatingSystem {
+    MAC, WINDOWS, LINUX, UNKNOWN
 
     static def getOperatingSystem() {
         final String os = System.getProperty("os.name")
         if (os.contains("Mac")) {
-            return OperatingSystem.MAC
+            return MAC
         } else if (os.contains("Windows")) {
-            return OperatingSystem.WINDOWS
+            return WINDOWS
         } else if (os.contains("Linux")) {
-            return OperatingSystem.LINUX
+            return LINUX
         } else {
-            return OperatingSystem.UNKNOWN
+            return UNKNOWN
         }
-
     }
+}
 
+class ScriptTask extends DefaultTask {
     static String getBotScriptDirectory() {
         final String NAME = "OsrsBot"
         final String SCRIPT_DIRECTORY = "/Scripts/Sources/"
         final String env = System.getenv(NAME.toUpperCase().concat("_HOME"))
         if (env == null || env.isEmpty()) {
             String homeDirBuilder = System.getProperty("user.home")
-            switch(getOperatingSystem()) {
+            switch(OperatingSystem.getOperatingSystem()) {
                 case OperatingSystem.LINUX:
                     homeDirBuilder += File.separator + ".config"
                     break
@@ -191,27 +188,49 @@ task outputToScriptDirectory(type: ScriptTask) {
     dependsOn(classes)
 }
 
-task launchClientWithScript(type: JavaExec) {
+task botRunGUI(type: JavaExec) {
     group = "Execution"
     description = "Runs the main method within RSB"
-    classpath = sourceSets.main.runtimeClasspath
+    classpath = sourceSets.main.compileClasspath + sourceSets.main.runtimeClasspath
     getMainClass() set "net.runelite.rsb.botLauncher.Application"
-    jvmArgs "-debug"
+    String jvmArgString = (OperatingSystem.MAC == OperatingSystem.getOperatingSystem()) ?
+            "-debug --add-opens=java.desktop/com.apple.eawt=ALL-UNNAMED --add-opens=java.desktop/sun.awt=ALL-UNNAMED" :
+            "-debug"
+    jvmArgs jvmArgString.split(" ")
     args "--bot-runelite --developer-mode".split(" ")
+    dependsOn(outputToScriptDirectory)
+}
+
+task botRunHeadless(type: JavaExec) {
+    group = "Execution"
+    description = "Runs the main method within RSB"
+    classpath = sourceSets.main.compileClasspath + sourceSets.main.runtimeClasspath
+    getMainClass() set "net.runelite.rsb.botLauncher.Application"
+    String jvmArgString = (OperatingSystem.MAC == OperatingSystem.getOperatingSystem()) ?
+            "-debug --add-opens=java.desktop/com.apple.eawt=ALL-UNNAMED --add-opens=java.desktop/sun.awt=ALL-UNNAMED" :
+            "-debug"
+    jvmArgs jvmArgString.split(" ")
+    args "--bot-runelite --developer-mode --headless".split(" ")
     dependsOn(outputToScriptDirectory)
 }
 
 task dockerBuild(type: Exec) {
     group = "Docker"
     description = "Builds the docker image"
-    // sourceSets.main.java.getDestinationDirectory().set(file("build/scripts"))
-    //This allows us to assign the build directory to where our bot will search for scripts in.
     commandLine 'docker', 'build', '-t', 'bot-image', '.'
     dependsOn classes
 }
 
-task dockerRun(type: Exec) {
+task dockerRunGUI(type: Exec) {
     group = "Docker"
     description = "Runs the Docker image on the host XServer"
-    commandLine 'docker', 'run', '-e', 'DISPLAY=host.docker.internal:0', '-t', '--rm', 'bot-image', '---headless'
+    commandLine 'docker', 'run', '-e', 'DISPLAY=host.docker.internal:1', '-t', '--rm', 'bot-image'
+    dependsOn dockerBuild
+}
+
+task dockerRunHeadless(type: Exec) {
+    group = "Docker"
+    description = "Runs the Docker image on the host XServer"
+    commandLine 'docker', 'run', '-e', 'DISPLAY=host.docker.internal:0', '-t', '--rm', 'bot-image', '--headless'
+    dependsOn dockerBuild
 }
