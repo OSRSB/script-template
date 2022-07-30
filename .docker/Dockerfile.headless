@@ -1,0 +1,4 @@
+# TODO
+## Add headless option, right now we should use Dockerfile.gui
+## Ideally we have Dockerfile in the root that passes an ARG so we can have 1
+## docker-compose that we pass the args needed i.e. we have an ARG for headless/gui

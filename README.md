@@ -4,6 +4,23 @@ ___
 ## Community
 * [Discord](https://discord.gg/CGBXNrHREP)
 
+
+## Local Dev
+
+1. Setup XQuartz so docker has gui access 
+
+Mac Example: https://gist.github.com/sorny/969fe55d85c9b0035b0109a31cbcb088
+
+2. Fork OsrsBot and DaxWalker and create a branch called dev (keep this remote updated with your local changes and rebuild image on changes)
+
+3. `make build-bot`
+
+4. `make run-bot`
+
+5. profit
+
+--- 
+
 ## Building your first script
 
 ###### Setting up the environment
