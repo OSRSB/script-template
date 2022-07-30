@@ -39,7 +39,7 @@ ARG BUILD_HOME
 ENV ORG=OSRSB
 # Set where git should store the OSRSBPlugin project
 ENV BOT_REPO=OsrsBot/
-ENV APP_HOME=$BUILD_HOME/$PLUGIN_REPO
+ENV APP_HOME=$BUILD_HOME/
 
 WORKDIR $APP_HOME
 
@@ -85,4 +85,8 @@ COPY --from=bot $BUILD_HOME/$BOT_JAR_FILE $APP_HOME/$BOT_JAR_FILE
 EXPOSE 8080
 
 # Launch the bot with the GUI
-ENTRYPOINT java -debug -jar $APP_HOME/${BOT_JAR_FILE} --bot-runelite --developer-mode
+# For the jar location, this must be manually written out as ENTRYPOINT does not allow ARGs to be accessible at runtime
+# For further reference check out the following links:
+# https://stackoverflow.com/questions/40902445/using-variable-interpolation-in-string-in-docker
+# https://docs.docker.com/engine/reference/builder/#environment-replacement
+ENTRYPOINT ["java", "-jar", "-debug", "/usr/app/bot/OSRSBot.jar", "--bot-runelite", "--developer-mode"]
