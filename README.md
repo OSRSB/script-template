@@ -4,23 +4,6 @@ ___
 ## Community
 * [Discord](https://discord.gg/CGBXNrHREP)
 
-
-## Local Dev
-
-1. Setup XQuartz so docker has gui access 
-
-Mac Example: https://gist.github.com/sorny/969fe55d85c9b0035b0109a31cbcb088
-
-2. Fork OsrsBot and DaxWalker and create a branch called dev (keep this remote updated with your local changes and rebuild image on changes)
-
-3. `make build-bot`
-
-4. `make run-bot`
-
-5. profit
-
---- 
-
 ## Building your first script
 
 ###### Setting up the environment
@@ -129,7 +112,7 @@ For Windows, I personally use:
 https://mobaxterm.mobatek.net/
 
 For Mac, XQuartz is a nice XServer tool.
-[Click this link for details on setting that up](https://gist.github.com/sorny/969fe55d85c9b0035b0109a31cbcb088)
+[Click this link for extra details on setting that up](https://gist.github.com/sorny/969fe55d85c9b0035b0109a31cbcb088)
 
 Nix users should be capable of setting up an XServer without instruction.
 
@@ -144,12 +127,16 @@ below are some helpful commands.
 #### Manual Instructions
 
 ###### Build Docker:
+```
 docker build -t bot-image .
+```
 
 ###### Run Docker:
 This will remove the container every time you run it (Fresh container)
 
-```docker run -e DISPLAY=host.docker.internal:0 -t --rm bot-image```
+```
+docker run -e DISPLAY=host.docker.internal:0 -t --rm bot-image
+```
 
 Without removing the container
 
