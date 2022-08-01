@@ -1,4 +1,6 @@
+import java.nio.file.CopyOption
 import java.nio.file.Files
+import java.nio.file.StandardCopyOption
 
 plugins {
     id 'java'
@@ -146,7 +148,7 @@ enum OperatingSystem {
 class ScriptTask extends DefaultTask {
     static String getBotScriptDirectory() {
         final String NAME = "OsrsBot"
-        final String SCRIPT_DIRECTORY = "/Scripts/Sources/"
+        final String SCRIPT_DIRECTORY = "/Scripts/Sources"
         final String env = System.getenv(NAME.toUpperCase().concat("_HOME"))
         if (env == null || env.isEmpty()) {
             String homeDirBuilder = System.getProperty("user.home")
@@ -169,9 +171,25 @@ class ScriptTask extends DefaultTask {
         return env
     }
 
+    def copyLargeDir(File dirFrom, File dirTo) {
+        if (!dirTo.exists()) {
+            dirTo.mkdir();
+        }
+
+        dirFrom.eachFile(groovy.io.FileType.FILES) { File source ->
+            File target = new File(dirTo, source.getName())
+            target.bytes = source.bytes
+        }
+
+        dirFrom.eachFile(groovy.io.FileType.DIRECTORIES) { File source ->
+            File target = new File(dirTo, source.getName())
+            copyLargeDir(source, target)
+        }
+    }
+
     @InputDirectory
     var scriptDependency =
-            project.file("${project.buildDir}/classes")
+            project.file("${project.buildDir}/classes/java/main")
 
     @OutputDirectory
     var outputDir =
@@ -179,12 +197,12 @@ class ScriptTask extends DefaultTask {
 
     @TaskAction
     def copyFiles() {
-        if (!outputDir.exists())
-            Files.copy(scriptDependency.toPath(), outputDir.toPath())
+        copyLargeDir(scriptDependency, outputDir)
     }
 }
 
 task outputToScriptDirectory(type: ScriptTask) {
+    group = 'TEST'
     dependsOn(classes)
 }
 
