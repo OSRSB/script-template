@@ -248,3 +248,24 @@ task dockerRunHeadless(type: Exec) {
     commandLine 'docker', 'run', '-e', 'DISPLAY=host.docker.internal:0', '-t', '--rm', 'bot-image', '--headless'
     dependsOn dockerBuild
 }
+
+task dockerCompose(type: Exec) {
+    group = "Docker"
+    commandLine 'docker', 'compose', '-f', 'docker-compose.yml', 'up', '--build', '--no-deps',  '-d'
+}
+
+task dockerComposeForceBuild(type: Exec) {
+    group = "Docker"
+    commandLine 'docker', 'compose', '-f', 'docker-compose.yml', 'build', '--no-cache', 'script'
+    commandLine 'docker', 'compose', '-f', 'docker-compose.yml', 'up', '--build', '--force-recreate', '--no-deps',  '-d'
+}
+
+task dockerComposeWithWireGuard(type: Exec) {
+    group = "Docker"
+    commandLine 'docker', 'compose', '-f', 'docker-compose-wireguard.yml', 'up', '--build', '--no-deps',  '-d'
+}
+task dockerComposeWithWireGuardForceBuild(type: Exec) {
+    group = "Docker"
+    commandLine 'docker', 'compose', '-f', 'docker-compose-wireguard.yml', 'build', '--no-cache', 'script'
+    commandLine 'docker', 'compose', '-f', 'docker-compose-wireguard.yml', 'up', '--build', '--force-recreate', '--no-deps',  '-d'
+}
