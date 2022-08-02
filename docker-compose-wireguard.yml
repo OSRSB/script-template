@@ -22,7 +22,7 @@ services:
   script:
     image: bot-image
     build:
-      dockerfile: .docker/Dockerfile.gui
+      dockerfile: Dockerfile
     container_name: bot
     network_mode: service:wireguard
     environment:
