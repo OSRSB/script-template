@@ -1,7 +1,3 @@
-import java.nio.file.CopyOption
-import java.nio.file.Files
-import java.nio.file.StandardCopyOption
-
 plugins {
     id 'java'
     id 'idea'
@@ -173,7 +169,7 @@ class ScriptTask extends DefaultTask {
 
     def copyLargeDir(File dirFrom, File dirTo) {
         if (!dirTo.exists()) {
-            dirTo.mkdir();
+            dirTo.mkdir()
         }
 
         dirFrom.eachFile(groovy.io.FileType.FILES) { File source ->
@@ -242,7 +238,7 @@ task dockerBuild(type: Exec) {
 task dockerRunGUI(type: Exec) {
     group = "Docker"
     description = "Runs the Docker image on the host XServer"
-    commandLine 'docker', 'run', '-e', 'DISPLAY=host.docker.internal:1', '-t', '--rm', 'bot-image'
+    commandLine 'docker', 'run', '-e', 'DISPLAY=host.docker.internal:0', '-t', '--rm', 'bot-image'
     dependsOn dockerBuild
 }
 

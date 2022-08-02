@@ -12,7 +12,7 @@ ARG BUILD_HOME
 ENV APP_HOME=$BUILD_HOME/bot
 WORKDIR $APP_HOME
 # Copy gradle settings and config to /app in the image
-COPY /.docker/build-dockerfile.gradle settings.gradle $APP_HOME
+COPY build.gradle settings.gradle $APP_HOME
 
 # Build gradle - caches dependencies
 RUN gradle --no-daemon build || return 0
@@ -25,10 +25,10 @@ ENV APP_HOME=$BUILD_HOME/bot
 WORKDIR $APP_HOME
 
 COPY --from=cache /root/.gradle /root/.gradle
-COPY --from=cache $APP_HOME/build-dockerfile.gradle $APP_HOME/settings.gradle $APP_HOME
+COPY --from=cache $APP_HOME/build.gradle $APP_HOME/settings.gradle $APP_HOME
 COPY src/ src/
 
-RUN gradle --no-daemon -b build-dockerfile.gradle clean build
+RUN gradle --no-daemon -b build.gradle clean build
 
 # We need to build the jar for interactive botting
 # Note we could run this headless and skip this stage
@@ -36,22 +36,22 @@ FROM gradle:7.4.2-jdk17-jammy AS bot
 
 ARG BUILD_HOME
 # Set where to pull OSRSBot from - default OSRSB
-ENV REPO=OSRSB
+ENV ORG=OSRSB
 # Set where git should store the OSRSBPlugin project
-ENV PLUGIN_REPO=OSRSBPlugin/
-ENV APP_HOME=$BUILD_HOME/$PLUGIN_REPO
+ENV BOT_REPO=OsrsBot/
+ENV APP_HOME=$BUILD_HOME/
 
 WORKDIR $APP_HOME
 
 # We need to clone the project and cache the git pull - everytime there's something new pushed
 # to master it will pull the latest changes
 RUN --mount=type=cache,target=/tmp/git_cache/ \
-    git clone --single-branch --branch main https://github.com/$REPO/OSRSBPlugin.git /tmp/git_cache/$PLUGIN_REPO; \
-    cd /tmp/git_cache/$PLUGIN_REPO \
-    && git pull origin main \
+    git clone --single-branch --branch master https://github.com/$ORG/OsrsBot.git /tmp/git_cache/$BOT_REPO; \
+    cd /tmp/git_cache/$BOT_REPO \
+    && git pull origin master \
     && cp -r ./ $APP_HOME
 
-RUN gradle --no-daemon clean shadedJar
+RUN gradle --no-daemon clean jar
 
 # actual container
 # Set base image from Docker image repo
@@ -61,7 +61,7 @@ FROM eclipse-temurin:17-jdk-jammy
 ARG BUILD_HOME
 ENV APP_HOME=$BUILD_HOME/bot
 # Name of the built OSRSBot jar file
-ENV BOT_JAR_FILE OSRSBPlugin.jar
+ENV BOT_JAR_FILE OSRSBot.jar
 
 # Installs XDisplay packages so we can actually view the container (and run the bot)
 # Caches our apt-get(s) with BuildKit
@@ -76,7 +76,7 @@ RUN --mount=type=cache,target=/var/cache/apt apt-get update \
 #COPY --from=builder $APP_HOME/build/scripts root/.config/OsrsBot/Scripts/Sources
 COPY --from=builder $APP_HOME/build/libs /root/.config/OsrsBot/Scripts/Precompiled
 # Adds the bot jar to the container
-COPY --from=bot $BUILD_HOME/OSRSBPlugin/$BOT_JAR_FILE $APP_HOME/$BOT_JAR_FILE
+COPY --from=bot $BUILD_HOME/$BOT_JAR_FILE $APP_HOME/$BOT_JAR_FILE
 # Adds runelite config settings to the container
 # COPY /config/.runelite/settings.properties /root/.runelite/settings.properties
 # Adds osrsbot account config to the container
@@ -85,4 +85,8 @@ COPY --from=bot $BUILD_HOME/OSRSBPlugin/$BOT_JAR_FILE $APP_HOME/$BOT_JAR_FILE
 EXPOSE 8080
 
 # Launch the bot with the GUI
-ENTRYPOINT java -debug -jar $APP_HOME/${BOT_JAR_FILE} --bot-runelite --developer-mode
+# For the jar location, this must be manually written out as ENTRYPOINT does not allow ARGs to be accessible at runtime
+# For further reference check out the following links:
+# https://stackoverflow.com/questions/40902445/using-variable-interpolation-in-string-in-docker
+# https://docs.docker.com/engine/reference/builder/#environment-replacement
+ENTRYPOINT ["java", "-jar", "-debug", "/usr/app/bot/OSRSBot.jar", "--bot-runelite", "--developer-mode"]
