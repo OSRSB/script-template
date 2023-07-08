@@ -47,9 +47,9 @@ dependencies {
 
     implementation group: 'net.sf.jopt-simple', name:'jopt-simple', version: '5.0.4'
 
-    compileOnly group: 'net.runelite', name:'client', version: runeLiteVersion
+    //compileOnly group: 'net.runelite', name:'client', version: runeLiteVersion
 
-    testImplementation group: 'net.runelite', name:'client', version: runeLiteVersion
+    //testImplementation group: 'net.runelite', name:'client', version: runeLiteVersion
     testImplementation group: 'net.runelite', name:'jshell', version: runeLiteVersion
     //We want these both at compile and at runtime.
     //So we use implementation instead of compileOnly or runtimeOnly
