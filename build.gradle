@@ -37,24 +37,26 @@ static def getRuneLiteVersion() {
     return latestName
 }
 
-
 dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.24'
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
+
+    implementation project(":OSRSBot")
+
+    implementation group: 'net.runelite', name: 'client', version: runeLiteVersion
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.slf4j:slf4j-simple:1.7.36'
 
     implementation group: 'net.sf.jopt-simple', name:'jopt-simple', version: '5.0.4'
 
-    compileOnly group: 'net.runelite', name:'client', version: runeLiteVersion
+    //implementation group: 'net.runelite', name:'client', version: runeLiteVersion
 
     testImplementation group: 'net.runelite', name:'client', version: runeLiteVersion
     testImplementation group: 'net.runelite', name:'jshell', version: runeLiteVersion
     //We want these both at compile and at runtime.
     //So we use implementation instead of compileOnly or runtimeOnly
     
-    implementation project(":OSRSBot")
     //implementation 'com.github.OSRSB:OSRSBot:master-SNAPSHOT'
     //implementation 'com.github.OSRSB:DaxWalkerOSRSBot:master-SNAPSHOT'
     implementation project(":DaxWalkerRSB")
