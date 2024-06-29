@@ -1,15 +1,15 @@
 package basicloopbot;
 
-import dax_api.api_lib.DaxWalker;
-import dax_api.api_lib.models.DaxCredentials;
-import dax_api.api_lib.models.DaxCredentialsProvider;
+//import dax_api.api_lib.DaxWalker;
+//import dax_api.api_lib.models.DaxCredentials;
+//import dax_api.api_lib.models.DaxCredentialsProvider;
 import net.runelite.rsb.methods.Methods;
 import net.runelite.rsb.methods.NPCs;
 import net.runelite.rsb.script.Script;
 import net.runelite.rsb.script.ScriptManifest;
 import net.runelite.rsb.wrappers.RSNPC;
 import net.runelite.rsb.wrappers.RSPath;
-import net.runelite.rsb.wrappers.subwrap.WalkerTile;
+//import net.runelite.rsb.wrappers.subwrap.WalkerTile;
 
 import java.util.logging.Logger;
 
@@ -24,7 +24,7 @@ public class Main extends Script {
 
     private final int MIN = random(250, 400); // Random minimum value for our loop
     private final int MAX = random(700, 900); // Random maximum value for our loop
-    private final WalkerTile chickenCoop = new WalkerTile(3233, 3295, 0);
+    //private final WalkerTile chickenCoop = new WalkerTile(3233, 3295, 0);
 
     @Override
     public int loop() {
@@ -74,7 +74,7 @@ public class Main extends Script {
             } else {
                 // Chicken is null, we should find one
                 Logger.getLogger(getClass().getName()).info("Walking");
-                DaxWalker.walkTo(chickenCoop);
+                //DaxWalker.walkTo(chickenCoop);
             }
         }  catch (NullPointerException e) {
             e.printStackTrace();
@@ -88,12 +88,12 @@ public class Main extends Script {
     @Override
     public boolean onStart() {
         // Pass DaxWalker credentials
-        DaxWalker.setCredentials(new DaxCredentialsProvider() {
-            @Override
-            public DaxCredentials getDaxCredentials() {
-                return new DaxCredentials("sub_DPjXXzL5DeSiPf", "PUBLIC-KEY");
-            }
-        });
+        //DaxWalker.setCredentials(new DaxCredentialsProvider() {
+        //    @Override
+        //    public DaxCredentials getDaxCredentials() {
+        //        return new DaxCredentials("sub_DPjXXzL5DeSiPf", "PUBLIC-KEY");
+        //    }
+        //});
         return true;
     }
 }
