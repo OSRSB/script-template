@@ -18,7 +18,15 @@ repositories {
     mavenCentral()
 }
 
+def lastSupportedVersion = "1.10.32.1"
 def runeLiteVersion = getRuneLiteVersion()
+def supportedCheck = false
+if (supportedCheck) {
+    if (runeLiteVersion != lastSupportedVersion) {
+        println("Warning - client has been updated")
+        throw new Exception("Out of date (last supported: " + lastSupportedVersion + " current client: " + runeLiteVersion + ")")
+    }
+}
 
 static def getRuneLiteVersion() {
     URL url = new URL("http://repo.runelite.net/net/runelite/client/maven-metadata.xml")
@@ -41,7 +49,7 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.24'
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
 
-    implementation project(":OSRSBot")
+    //implementation project(":OSRSBot")
 
     implementation group: 'net.runelite', name: 'client', version: runeLiteVersion
 
@@ -56,10 +64,10 @@ dependencies {
     testImplementation group: 'net.runelite', name:'jshell', version: runeLiteVersion
     //We want these both at compile and at runtime.
     //So we use implementation instead of compileOnly or runtimeOnly
-    
-    //implementation 'com.github.OSRSB:OSRSBot:master-SNAPSHOT'
+
+    implementation 'com.github.OSRSB:OSRSBot:master-SNAPSHOT'
     //implementation 'com.github.OSRSB:DaxWalkerOSRSBot:master-SNAPSHOT'
-    implementation project(":DaxWalkerRSB")
+    //implementation project(":DaxWalkerRSB")
 }
 
 group = 'osrsb'
@@ -134,7 +142,7 @@ class ScriptTask extends DefaultTask {
 
     def copyLargeDir(File dirFrom, File dirTo) {
         if (!dirTo.exists()) {
-            dirTo.mkdir()
+            dirTo.mkdir();
         }
 
         dirFrom.eachFile(groovy.io.FileType.FILES) { File source ->
