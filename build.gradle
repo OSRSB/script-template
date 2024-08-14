@@ -18,7 +18,7 @@ repositories {
     mavenCentral()
 }
 
-def lastSupportedVersion = "1.10.32.1"
+def lastSupportedVersion = "1.10.35"
 def runeLiteVersion = getRuneLiteVersion()
 def supportedCheck = false
 if (supportedCheck) {

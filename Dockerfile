@@ -12,7 +12,8 @@ ARG BUILD_HOME
 ENV APP_HOME=$BUILD_HOME/bot
 WORKDIR $APP_HOME
 # Copy gradle settings and config to /app in the image
-COPY build.gradle settings.gradle $APP_HOME
+COPY build.gradle $APP_HOME
+COPY settings.gradle $APP_HOME
 
 # Build gradle - caches dependencies
 RUN gradle --no-daemon build || return 0
@@ -25,7 +26,8 @@ ENV APP_HOME=$BUILD_HOME/bot
 WORKDIR $APP_HOME
 
 COPY --from=cache /root/.gradle /root/.gradle
-COPY --from=cache $APP_HOME/build.gradle $APP_HOME/settings.gradle $APP_HOME
+COPY --from=cache $APP_HOME/build.gradle $APP_HOME
+COPY --from=cache $APP_HOME/settings.gradle $APP_HOME
 COPY src/ src/
 
 RUN gradle --no-daemon -b build.gradle clean build
